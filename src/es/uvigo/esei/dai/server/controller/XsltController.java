@@ -29,13 +29,13 @@ public class XsltController {
 		return  new HTTPResponse("200 OK", "HTTP/1.1",contenido_pagina, parametros_respuesta_http);			
 	}
 	
-	public HTTPResponse post(String p)throws  SQLException {
+	public HTTPResponse post(String p, String xsdUUID)throws  SQLException {
 		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
 		String uuid=UUID.randomUUID().toString();
-		XSLT xslt=new XSLT(uuid,p);
+		XSLT xslt=new XSLT(uuid,p,xsdUUID);
 		this.XsltDBDAO.create(xslt);
 		
-		String paginaPost="<html><head><title>WEB</title></head><body><a href=html?uuid="+ xslt.getUUID()+">Pagina con UUID"+xslt.getUUID()+"</a></body></html>";
+		String paginaPost="<html><head><title>WEB</title></head><body><a href=xslt?uuid="+ xslt.getUUID()+">Pagina con UUID"+xslt.getUUID()+"</a></body></html>";
 		parametros_respuesta_http.put("Content-Length",String.valueOf(paginaPost.length()));
 		parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
 		return new HTTPResponse("200 OK", "HTTP/1.1",paginaPost,parametros_respuesta_http);

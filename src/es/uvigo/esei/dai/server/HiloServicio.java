@@ -19,6 +19,7 @@ import es.uvigo.esei.dai.server.dbdao.HTMLDBDAO;
 import es.uvigo.esei.dai.server.dbdao.XMLDBDAO;
 import es.uvigo.esei.dai.server.dbdao.XSDDBDAO;
 import es.uvigo.esei.dai.server.dbdao.XSLTDBDAO;
+import es.uvigo.esei.dai.server.entity.XSD;
 
 public class HiloServicio implements Runnable {
 	private final Socket socket;
@@ -116,7 +117,7 @@ public class HiloServicio implements Runnable {
 					case "xslt":
 						XSLTDBDAO xsltDBDAO = new XSLTDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
 						XsltController xsltcontroler = new XsltController(xsltDBDAO);
-					//	XSDDBDAO xsdltDBDAO = new XSDDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
+						XSDDBDAO xsdltDBDAO = new XSDDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
 					//	XsdController xsdltcontroler = new XsdController(xsdltDBDAO);
 						switch (hreq.getMetodo()) {
 							case "GET":
@@ -127,9 +128,9 @@ public class HiloServicio implements Runnable {
 									hres=xsltcontroler.getPaginaIndex(); 
 								hres.print(bw);
 							break;
-							case "POST":
-								//if(xsdltcontroler.validar_xsd(hreq.getParametros().get("xsd"))){}
-								hres=xsltcontroler.post( hreq.getParametros().get("xslt")); 
+							case "POST": 
+								XSD xsd = xsdltDBDAO.get(hreq.getParametros().get("xsd"));
+								hres=xsltcontroler.post( hreq.getParametros().get("xslt"),xsd.getUUID()); 
 								hres.print(bw);
 							break;
 							case "DELETE":

@@ -17,11 +17,12 @@ public class XSLTDBDAO{
 		this.connection = connection;
 	}
 	public void create(XSLT xslt) throws SQLException{
-		String insert = "INSERT INTO XSLT " +"(uuid,content) " + "VALUES (?, ?)";
+		String insert = "INSERT INTO XSLT " +"(uuid,content,xsd) " + "VALUES (?, ?,?)";
 
 		try (PreparedStatement statement = this.connection.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1,xslt.getUUID());
 			statement.setString(2,xslt.getContent());
+			statement.setString(3,xslt.getXSD());
 
 			if(statement.executeUpdate() != 1) {
 				throw new SQLException("Error al ejecutar INSERT");
@@ -32,12 +33,13 @@ public class XSLTDBDAO{
 	}
 	public void update(XSLT xslt) throws PaginaNotFoundException, SQLException{
 
-		String update = "UPDATE XSLT SET uuid=?, content=?";
+		String update = "UPDATE XSLT SET uuid=?, content=?, xsd=?";
 
 		try (PreparedStatement statement = this.connection.prepareStatement(update)) {
 			statement.setString(1,xslt.getUUID());
 			statement.setString(2,xslt.getContent());
-
+			statement.setString(3,xslt.getXSD());
+			
 			if(statement.executeUpdate() != 1) {
 				throw new SQLException("Error al ejecutar UPDATE");
 			}
@@ -65,7 +67,7 @@ public class XSLTDBDAO{
 			statement.setString(1, uuid);
 			try(ResultSet rs=statement.executeQuery()){
 				rs.next();
-				return new XSLT(rs.getString("uuid"),rs.getString("content"));
+				return new XSLT(rs.getString("uuid"),rs.getString("content"), rs.getString("xsd"));
 			}catch(SQLException e){
 				throw new PaginaNotFoundException("La pagina no existe",uuid);
 			}
@@ -95,7 +97,7 @@ public class XSLTDBDAO{
 			ResultSet rs=statement.executeQuery();
 			
 			while(rs.next()){
-				lista.add(new XSLT(rs.getString("uuid"),rs.getString("content")));
+				lista.add(new XSLT(rs.getString("uuid"),rs.getString("content"),rs.getString("xsd")));
 			}
 			return lista;
 			

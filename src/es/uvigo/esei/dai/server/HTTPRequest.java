@@ -36,10 +36,9 @@ public class HTTPRequest {
 		  this.recurso=matcher.group("recurso");
 		  this.metodo=matcher.group("metodo").toUpperCase();
 		  this.version=matcher.group("version");
-		  
+		
 		  par=matcher.group("parametros");
 		  if(par!=null){
-			   
 			  ref_1=par.split("&");
 			  for(int i=0; i<ref_1.length;i++){
 				  ref_2=ref_1[i].split("=");
@@ -62,8 +61,12 @@ public class HTTPRequest {
 				  ref_1=linea.split("&");
 				  for(int i=0; i<ref_1.length;i++) {
 					  ref_2=ref_1[i].split("=");
-					  this.parametros.put(ref_2[0],ref_2[1]);
-				  }
+					  if(ref_2.length == 1)
+						  this.parametros.put(ref_2[0],"");
+					  else
+						  this.parametros.put(ref_2[0],ref_2[1]);
+					  
+				}
 			  }
 		  }
 	 	}

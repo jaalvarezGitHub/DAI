@@ -1,19 +1,13 @@
 ----------------------------------------------------------------
-Fri Nov 22 17:43:34 CET 2013:
- Arrancando Derby versión The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instancia a816c00e-0142-80b1-f15f-0000030ea698 
-en el directorio de base de datos C:\Users\usuario\Desktop\DAI\DATABASE  con el cargador de clases sun.misc.Launcher$AppClassLoader@70cfaf6e
+Fri Dec 06 19:19:36 CET 2013:
+ Arrancando Derby versión The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instancia a816c00e-0142-c922-e4a8-000003024900 
+en el directorio de base de datos C:\Users\usuario\Documents\GitHub\DAI\DATABASE  con el cargador de clases sun.misc.Launcher$AppClassLoader@70cfaf6e
 
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_40-b43
-user.dir=C:\Users\usuario\Desktop\DAI
+user.dir=C:\Users\usuario\Documents\GitHub\DAI
 os.name=Windows 7
 os.arch=amd64
 os.version=6.1
 derby.system.home=null
 Cargador de clases de base de datos iniciado - derby.database.classpath=''
-----------------------------------------------------------------
-Fri Nov 22 17:43:43 CET 2013: cerrando motor de Derby
-----------------------------------------------------------------
-Fri Nov 22 17:43:43 CET 2013:
-Cerrando la instancia a816c00e-0142-80b1-f15f-0000030ea698 en el directorio de base de datos C:\Users\usuario\Desktop\DAI\DATABASE con cargador de clases sun.misc.Launcher$AppClassLoader@70cfaf6e
-----------------------------------------------------------------
