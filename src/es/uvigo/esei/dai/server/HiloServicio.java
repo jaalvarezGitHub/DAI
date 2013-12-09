@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ public class HiloServicio implements Runnable {
 	}
 	public void run() {
 		
-		Propiedades p=Propiedades.getInstancia();
 		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
 		HTTPResponse hres;
 		
@@ -41,11 +41,14 @@ public class HiloServicio implements Runnable {
 					socket.getInputStream()));
 	
 			try{
+				ConfigProperties cp=ConfigProperties.getInstance();
+				Connection connection = DriverManager.getConnection(cp.getUrl(), cp.getUser(), cp.getPass());
+				
 				HTTPRequest hreq = new HTTPRequest(br);
 				
 				switch(hreq.getRecurso()){
 					case "html":
-						HTMLDBDAO paginaDBDAO = new HTMLDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
+						HTMLDBDAO paginaDBDAO = new HTMLDBDAO(connection);
 						HtmlController htmlcontroler = new HtmlController(paginaDBDAO);
 						
 						switch (hreq.getMetodo()) {
@@ -69,7 +72,7 @@ public class HiloServicio implements Runnable {
 						}
 					break;
 					case "xml":
-						XMLDBDAO xmlDBDAO = new XMLDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
+						XMLDBDAO xmlDBDAO = new XMLDBDAO(connection);
 						XmlController xmlcontroler = new XmlController(xmlDBDAO);
 						switch (hreq.getMetodo()) {
 							case "GET":
@@ -92,7 +95,7 @@ public class HiloServicio implements Runnable {
 						}
 					break;
 					case "xsd":
-						XSDDBDAO xsdDBDAO = new XSDDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
+						XSDDBDAO xsdDBDAO = new XSDDBDAO(connection);
 						XsdController xsdcontroler = new XsdController(xsdDBDAO);
 						switch (hreq.getMetodo()) {
 							case "GET":
@@ -115,10 +118,10 @@ public class HiloServicio implements Runnable {
 						}
 					break;
 					case "xslt":
-						XSLTDBDAO xsltDBDAO = new XSLTDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
+						XSLTDBDAO xsltDBDAO = new XSLTDBDAO(connection);
 						XsltController xsltcontroler = new XsltController(xsltDBDAO);
-						XSDDBDAO xsdltDBDAO = new XSDDBDAO(DriverManager.getConnection(p.getNombreBD(), p.getUsuario(), p.getContrasena()));
-					//	XsdController xsdltcontroler = new XsdController(xsdltDBDAO);
+						XSDDBDAO xsdltDBDAO = new XSDDBDAO(connection);
+
 						switch (hreq.getMetodo()) {
 							case "GET":
 								String uuid = hreq.getParametros().get("uuid");

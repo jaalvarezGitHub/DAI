@@ -9,9 +9,10 @@ public class HiloServidor {
 
 	public static void arrancarServidor() {
 		try{
-			Propiedades p=Propiedades.getInstancia();
-			try (ServerSocket serverSocket = new ServerSocket(p.getPuerto())) {
-				ExecutorService executor = Executors.newFixedThreadPool(p.getConexion());
+			ConfigProperties cp= ConfigProperties.getInstance(); 
+		
+			try (ServerSocket serverSocket = new ServerSocket(cp.getHttp()) ) {
+				ExecutorService executor = Executors.newFixedThreadPool(cp.getNumClients());
 				while (true) {
 					executor.execute(new HiloServicio(serverSocket.accept()));
 				}
