@@ -12,6 +12,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
+
 import es.uvigo.esei.dai.server.controller.HtmlController;
 import es.uvigo.esei.dai.server.controller.XmlController;
 import es.uvigo.esei.dai.server.controller.XsdController;
@@ -21,6 +25,7 @@ import es.uvigo.esei.dai.server.dbdao.XMLDBDAO;
 import es.uvigo.esei.dai.server.dbdao.XSDDBDAO;
 import es.uvigo.esei.dai.server.dbdao.XSLTDBDAO;
 import es.uvigo.esei.dai.server.entity.XSD;
+import es.uvigo.esei.dai.server.entity.XSLT;
 
 public class HiloServicio implements Runnable {
 	private final Socket socket;
@@ -77,10 +82,17 @@ public class HiloServicio implements Runnable {
 						switch (hreq.getMetodo()) {
 							case "GET":
 								String uuid = hreq.getParametros().get("uuid");
-								if (uuid != null) 
+								String uuidXslt =hreq.getParametros().get("xslt");
+								if(uuidXslt !=null){
+									XSLT xslt_xml = new XSLTDBDAO(connection).get(uuidXslt);
+									XSD xsd_xml = new XSDDBDAO(connection).get(xslt_xml.getXSD());
+									
+									hres = xmlcontroler.getPagina(uuid,xsd_xml.getContent(), xslt_xml.getContent());	
+								}else if (uuid != null){
 									hres = xmlcontroler.getPagina(uuid);
-								else
+								}else{
 									hres=xmlcontroler.getPaginaIndex(); 
+								}
 								hres.print(bw);
 							break;
 							case "POST":
@@ -145,11 +157,12 @@ public class HiloServicio implements Runnable {
 					break;
 				}
 			} catch (PaginaNotFoundException e) {
-					String paginaIndex = "<html><head><title>WEB</title></head><body><p>NOT FOUND</p></body></html>";
-					parametros_respuesta_http.put("Content-Length",paginaIndex.length() + "");
-					parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
-					hres = new HTTPResponse("404 NOT FOUND", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
-					hres.print(bw);
+					
+				String paginaIndex = "<html><head><title>WEB</title></head><body><p>NOT FOUND</p></body></html>";
+				parametros_respuesta_http.put("Content-Length",paginaIndex.length() + "");
+				parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+				hres = new HTTPResponse("404 NOT FOUND", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
+				hres.print(bw);
 			} catch (SQLException sqle) {
 				
 				String paginaIndex = "<html><head><title>WEB</title></head><body><p>Error en el servidor</p></body></html>";
@@ -157,10 +170,24 @@ public class HiloServicio implements Runnable {
 				parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
 				hres = new HTTPResponse("500 SERVER ERROR", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
 				hres.print(bw);
-			}
+			} catch (SAXException saxe){
+				
+				String paginaIndex = "<html><head><title>WEB</title></head><body><p>Error en el servidor(400 Bad request)</p></body></html>";
+				parametros_respuesta_http.put("Content-Length",paginaIndex.length() + "");
+				parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+				hres = new HTTPResponse("400 BAD REQUEST", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
+				hres.print(bw);
+			}catch (TransformerException transe){
+			
+				String paginaIndex = "<html><head><title>WEB</title></head><body><p>Error en la transformación del documento</p></body></html>";
+				parametros_respuesta_http.put("Content-Length",paginaIndex.length() + "");
+				parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+				hres = new HTTPResponse("200 OK", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
+				hres.print(bw);
+		}
 		
 		 } catch (IOException e) {
-				System.out.println("Error en el servicio al cliente: "+ e.getMessage());
+				e.printStackTrace();
 	
 		 }
 	}

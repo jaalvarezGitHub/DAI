@@ -25,7 +25,7 @@ public class XsdController {
 		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
 		
 		parametros_respuesta_http.put("Content-Length",contenido_pagina.length() + "");
-		parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+		parametros_respuesta_http.put("Content-Type","text/xml; charset =UTF8");
 		return  new HTTPResponse("200 OK", "HTTP/1.1",contenido_pagina, parametros_respuesta_http);			
 	}
 	
@@ -37,7 +37,7 @@ public class XsdController {
 		
 		String paginaPost="<html><head><title>WEB</title></head><body><a href=xsd?uuid="+ xsd.getUUID()+">Pagina con UUID"+xsd.getUUID()+"</a></body></html>";
 		parametros_respuesta_http.put("Content-Length",String.valueOf(paginaPost.length()));
-		parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+		parametros_respuesta_http.put("Content-Type","text/xml; charset =UTF8");
 		return new HTTPResponse("200 OK", "HTTP/1.1",paginaPost,parametros_respuesta_http);
 	}	
 	

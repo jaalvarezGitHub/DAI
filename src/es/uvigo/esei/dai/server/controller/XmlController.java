@@ -1,11 +1,28 @@
 package es.uvigo.esei.dai.server.controller;
 
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
+import org.xml.sax.SAXException;
 
 import es.uvigo.esei.dai.server.HTTPResponse;
 import es.uvigo.esei.dai.server.PaginaNotFoundException;
@@ -24,8 +41,43 @@ public class XmlController {
 		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
 		
 		parametros_respuesta_http.put("Content-Length",contenido_pagina.length() + "");
-		parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+		parametros_respuesta_http.put("Content-Type","text/xml; charset=utf-8");
 		return  new HTTPResponse("200 OK", "HTTP/1.1",contenido_pagina, parametros_respuesta_http);			
+	}
+	
+	public HTTPResponse getPagina(String uuid,String xsd, String xslt) throws PaginaNotFoundException, SQLException, SAXException, IOException, TransformerException {
+		
+			String xml= XmlDBDAO.get(uuid).getContent();
+			
+			StreamSource streamXml = new StreamSource(new StringReader(xml));
+			StreamSource streamXsd = new StreamSource(new StringReader(xsd));
+			XmlController.validateXML(streamXml,streamXsd);
+			
+			StreamSource streamXslt = new StreamSource(new StringReader(xslt));
+			TransformerFactory tfactory =TransformerFactory.newInstance();
+			Transformer transformer = tfactory.newTransformer(streamXslt);
+			
+			StringWriter stringWriter = new StringWriter();
+			transformer.transform(streamXml, new StreamResult(stringWriter));
+			
+			Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
+			
+			parametros_respuesta_http.put("Content-Length",xml.length() + "");
+			parametros_respuesta_http.put("Content-Type","text/xml; charset =UTF8");
+			
+			return  new HTTPResponse("200 OK", "HTTP/1.1",stringWriter.toString(), parametros_respuesta_http);	
+	}
+	
+	public static boolean validateXML(StreamSource xml, StreamSource xsd) throws SAXException, IOException{
+		
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = schemaFactory.newSchema(xsd);
+			
+			Validator validator= schema.newValidator();
+			validator.validate(xml);
+			
+			return true;
+		
 	}
 	
 	public  HTTPResponse post(String p)throws  SQLException {

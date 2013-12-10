@@ -19,7 +19,7 @@ public class HTTPRequest {
 	 private int tam_contenido;
 	 
 	 public HTTPRequest(Reader peticion) throws IOException{
-
+		
 		  BufferedReader br=new BufferedReader(peticion);
 		 
 		  String linea, par;
@@ -28,7 +28,7 @@ public class HTTPRequest {
 		  Matcher matcher;
 		  
 		  linea=br.readLine();
-	
+		
 		  patron=Pattern.compile("(?<metodo>.*)\\s(?:(/.)*)?/(?<recurso>[^?]*)(\\s|\\?(?<parametros>.*)\\s)(?<version>.*)");
 		  matcher=patron.matcher(linea);
 		  matcher.find();
@@ -42,7 +42,8 @@ public class HTTPRequest {
 			  ref_1=par.split("&");
 			  for(int i=0; i<ref_1.length;i++){
 				  ref_2=ref_1[i].split("=");
-				  parametros.put(ref_2[0], ref_2[1]);
+				  if(ref_2.length == 2)
+					  parametros.put(ref_2[0], ref_2[1]);
 			  }
 		  }
 		  while(!(linea=br.readLine()).equals("")){
@@ -57,19 +58,18 @@ public class HTTPRequest {
 			  if(this.tam_contenido>0){
 				  char [] contenido=new char [this.tam_contenido];
 				  br.read(contenido,0, this.tam_contenido);
-				  linea=URLDecoder.decode(new String(contenido),"UTF-8");
+				  linea= new String(contenido);
 				  ref_1=linea.split("&");
 				  for(int i=0; i<ref_1.length;i++) {
 					  ref_2=ref_1[i].split("=");
 					  if(ref_2.length == 1)
-						  this.parametros.put(ref_2[0],"");
+						  this.parametros.put(URLDecoder.decode(ref_2[0],"UTF-8" ),"");
 					  else
-						  this.parametros.put(ref_2[0],ref_2[1]);
-					  
+						  this.parametros.put(URLDecoder.decode(ref_2[0],"UTF-8" ),URLDecoder.decode(ref_2[1],"UTF-8" )); 
 				}
 			  }
 		  }
-	 	}
+		}
 	 
 	 public String getMetodo(){
 		 return metodo;
