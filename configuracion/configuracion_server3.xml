@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration
+	xmlns="http://www.esei.uvigo.es/dai/proyecto"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.esei.uvigo.es/dai/proyecto configuracion.xsd"
+>
+	<connections>
+		<http>10003</http>
+		<webservice>http://localhost:20003/xmlserver</webservice>
+		<numClients>50</numClients>
+	</connections>
+	<database>
+		<user>user</user>
+		<password>user</password>
+		<url>jdbc:derby:C:\Users\usuario\Documents\GitHub\DAI\server3</url>
+	</database>
+	<servers>
+		<server 
+			name="Server 1" 
+			wsdl="http://localhost:20001/xmlserver?wsdl"
+			namespace="http://service.dai.esei.uvigo.es/"
+			service="DaiServiceImplService"
+			httpAddress="http://localhost:10002/"
+		/>
+		<server 
+			name="Server 2" 
+			wsdl="http://localhost:20002/xmlserver?wsdl"
+			namespace="http://service.dai.esei.uvigo.es/"
+			service="DaiServiceImplService"
+			httpAddress="http://localhost:10002/"
+		/>
+
+	</servers>
+</configuration>
