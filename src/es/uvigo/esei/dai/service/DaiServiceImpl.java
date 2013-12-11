@@ -48,27 +48,42 @@ public class DaiServiceImpl implements DaiService{
 	}
 	
 	@Override
-	public String getHtmlContent(String uuid) throws PaginaNotFoundException, SQLException {
+	public String getHtmlContent(String uuid) throws SQLException  {
 		HTMLDBDAO htmlDao = new HTMLDBDAO(this.connection);
-		return htmlDao.get(uuid).getContent();
+		try {
+			return htmlDao.get(uuid).getContent();
+		} catch (PaginaNotFoundException e) {
+			 return null;
+		}
 	}
 	@Override
-	public String getXmlContent(String uuid) throws PaginaNotFoundException, SQLException {
+	public String getXmlContent(String uuid) throws  SQLException {
 		XMLDBDAO xmlDao = new XMLDBDAO(this.connection);
-		return xmlDao.get(uuid).getContent();
+		try {
+			return xmlDao.get(uuid).getContent();
+		} catch (PaginaNotFoundException e) {
+			return null;
+		}
 	}
 
 	@Override
-	public String getXsdContent(String uuid) throws PaginaNotFoundException, SQLException {
+	public String getXsdContent(String uuid) throws  SQLException {
 		XSDDBDAO xsdDao = new XSDDBDAO(this.connection);
-		return xsdDao.get(uuid).getContent();
+		try {
+			return xsdDao.get(uuid).getContent();
+		} catch (PaginaNotFoundException e) {
+			return null;
+		}
 	}
 
 	@Override
-	public String getXsltContent(String uuid) throws PaginaNotFoundException, SQLException {
+	public String getXsltContent(String uuid) throws SQLException {
 		XSLTDBDAO xsltDao = new XSLTDBDAO(this.connection);
-		return xsltDao.get(uuid).getContent();
-
+		try {
+			return xsltDao.get(uuid).getContent();
+		} catch (PaginaNotFoundException e) {
+			return null;
+		}
 	}
 
 }

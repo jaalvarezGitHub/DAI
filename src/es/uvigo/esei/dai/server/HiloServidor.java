@@ -19,13 +19,6 @@ public class HiloServidor {
 		
 			try (ServerSocket serverSocket = new ServerSocket(cp.getHttp()) ) {
 				ExecutorService executor = Executors.newFixedThreadPool(cp.getNumClients());
-				///
-				Connection connection = DriverManager.getConnection(cp.getUrl(), cp.getUser(), cp.getPass());
-				Endpoint endpoint =Endpoint.create(new DaiServiceImpl(connection));
-				endpoint.setExecutor(Executors.newFixedThreadPool(50));
-				endpoint.publish("http://localhost:8000/dai");				
-				////
-				
 				while (true) {
 					executor.execute(new HiloServicio(serverSocket.accept()));
 				}

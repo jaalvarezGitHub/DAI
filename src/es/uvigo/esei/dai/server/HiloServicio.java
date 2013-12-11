@@ -60,7 +60,14 @@ public class HiloServicio implements Runnable {
 							case "GET":
 								String uuid = hreq.getParametros().get("uuid");
 								if (uuid != null) 
-									hres = htmlcontroler.getPagina(uuid);
+									try{
+										
+										hres = htmlcontroler.getPagina(uuid);
+									}catch(PaginaNotFoundException e ){
+										
+										RemoteDaiService remoteDaiService=new RemoteDaiService(); 
+										hres = new HTTPResponse("200 OK", "HTTP/1.1",remoteDaiService.buscarPagina("getHtmlContent", uuid), parametros_respuesta_http);
+									}
 								else
 									hres=htmlcontroler.getPaginaIndex(); 
 								hres.print(bw);
@@ -184,7 +191,14 @@ public class HiloServicio implements Runnable {
 				parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
 				hres = new HTTPResponse("200 OK", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
 				hres.print(bw);
-		}
+		} catch (Exception e) {
+			String paginaIndex = "<html><head><title>WEB</title></head><body><p>Error en el servidor</p></body></html>";
+			parametros_respuesta_http.put("Content-Length",paginaIndex.length() + "");
+			parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+			hres = new HTTPResponse("500 SERVER ERROR", "HTTP/1.1",paginaIndex, parametros_respuesta_http);
+			hres.print(bw);
+			
+	 }
 		
 		 } catch (IOException e) {
 				e.printStackTrace();

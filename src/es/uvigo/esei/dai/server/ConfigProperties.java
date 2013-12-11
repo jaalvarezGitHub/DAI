@@ -1,4 +1,5 @@
 package es.uvigo.esei.dai.server;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -10,6 +11,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -54,5 +56,9 @@ public class ConfigProperties {
 	}
 	public int getHttp(){
 		return  Integer.parseInt(document.getElementsByTagName("http").item(0).getTextContent());
+	}
+	public  NodeList getServer(){
+		 return  document.getElementsByTagName("server");
+
 	}
 }
