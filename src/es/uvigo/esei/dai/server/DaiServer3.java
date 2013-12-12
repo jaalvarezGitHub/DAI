@@ -22,7 +22,7 @@ public class DaiServer3 {
 				cp.loadProperties(args[0], args[1]);
 				
 				Connection connection = DriverManager.getConnection(cp.getUrl(), cp.getUser(), cp.getPass());
-				Endpoint endpoint =Endpoint.create(new DaiServiceImpl(connection));
+				Endpoint endpoint =Endpoint.create(new DaiServiceImpl(connection,"Server 3",cp.getHttp()+""));
 				endpoint.setExecutor(Executors.newFixedThreadPool(50));
 				endpoint.publish(cp.getWebService());	
 				

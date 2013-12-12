@@ -18,8 +18,8 @@
 	<servers>
 
 		<server 
-			name="Server 2" 
-			wsdl="http://localhost:20002/xmlserver?wsdl"
+			name="Server 1" 
+			wsdl="http://localhost:20001/xmlserver?wsdl"
 			namespace="http://service.dai.esei.uvigo.es/"				   
 			service="DaiServiceImplService"
 			httpAddress="http://localhost:10001/"

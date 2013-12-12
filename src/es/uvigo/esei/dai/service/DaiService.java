@@ -3,6 +3,7 @@ package es.uvigo.esei.dai.service;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding.Use;
@@ -15,6 +16,7 @@ import es.uvigo.esei.dai.server.PaginaNotFoundException;
 public interface DaiService {
 	
 	public Connection connection=null;
+	public String name=null;
 
 	
 	@WebMethod public ArrayList<String>  getHtmlUUID() throws SQLException;
@@ -26,4 +28,7 @@ public interface DaiService {
 	@WebMethod String getXmlContent(String uuid) throws PaginaNotFoundException, SQLException;
 	@WebMethod String getXsltContent(String uuid) throws PaginaNotFoundException, SQLException;
 	@WebMethod String getXsdContent(String uuid) throws PaginaNotFoundException, SQLException;
+	@WebMethod String getXsltXsd(String uuid) throws  PaginaNotFoundException, SQLException;
+	@WebMethod String getName();
+	@WebMethod String getPort();
 }

@@ -5,8 +5,8 @@ public class XSLT {
 	String xsd;
 	String content;
 	
-	public XSLT(String uid,String contenido,String xsd){
-		this.uuid=uid;
+	public XSLT(String uuid,String contenido,String xsd){
+		this.uuid=uuid;
 		this.content=contenido;
 		this.xsd=xsd;
 	}

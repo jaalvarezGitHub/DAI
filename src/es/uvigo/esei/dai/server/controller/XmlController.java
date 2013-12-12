@@ -47,25 +47,23 @@ public class XmlController {
 	
 	public HTTPResponse getPagina(String uuid,String xsd, String xslt) throws PaginaNotFoundException, SQLException, SAXException, IOException, TransformerException {
 		
-			String xml= XmlDBDAO.get(uuid).getContent();
-			
-			StreamSource streamXml = new StreamSource(new StringReader(xml));
-			StreamSource streamXsd = new StreamSource(new StringReader(xsd));
-			XmlController.validateXML(streamXml,streamXsd);
-			
-			StreamSource streamXslt = new StreamSource(new StringReader(xslt));
-			TransformerFactory tfactory =TransformerFactory.newInstance();
-			Transformer transformer = tfactory.newTransformer(streamXslt);
-			
-			StringWriter stringWriter = new StringWriter();
-			transformer.transform(streamXml, new StreamResult(stringWriter));
-			
-			Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
-			
-			parametros_respuesta_http.put("Content-Length",xml.length() + "");
-			parametros_respuesta_http.put("Content-Type","text/xml; charset =UTF8");
-			
+		String xml= XmlDBDAO.get(uuid).getContent();
+		
+		StreamSource streamXsd = new StreamSource(new StringReader(xslt));
+		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
+	
+		XmlController.validateXML(new StreamSource(new StringReader(xml)),streamXsd);
+		
+		TransformerFactory tfactory =TransformerFactory.newInstance();
+		Transformer transformer = tfactory.newTransformer(new StreamSource(new StringReader(xslt)));
+		StringWriter stringWriter = new StringWriter();
+		transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(stringWriter));
+		
+		parametros_respuesta_http.put("Content-Length",xml.length() + "");
+		parametros_respuesta_http.put("Content-Type","text/html; charset =UTF8");
+
 			return  new HTTPResponse("200 OK", "HTTP/1.1",stringWriter.toString(), parametros_respuesta_http);	
+			
 	}
 	
 	public static boolean validateXML(StreamSource xml, StreamSource xsd) throws SAXException, IOException{

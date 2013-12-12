@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Wed Dec 11 22:18:41 CET 2013:
- Arrancando Derby versión The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instancia a816c00e-0142-e386-a5e3-000003031798 
-en el directorio de base de datos C:\Users\usuario\Documents\GitHub\DAI\server1  con el cargador de clases sun.misc.Launcher$AppClassLoader@76bcfa38
+Thu Dec 12 12:51:34 CET 2013:
+ Arrancando Derby versión The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instancia a816c00e-0142-e6a5-cae9-0000030324a8 
+en el directorio de base de datos C:\Users\usuario\Documents\GitHub\DAI\server1  con el cargador de clases sun.misc.Launcher$AppClassLoader@70cfaf6e
 
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_40-b43

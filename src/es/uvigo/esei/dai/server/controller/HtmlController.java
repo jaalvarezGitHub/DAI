@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import es.uvigo.esei.dai.server.HTTPResponse;
 import es.uvigo.esei.dai.server.PaginaNotFoundException;
 import es.uvigo.esei.dai.server.dbdao.HTMLDBDAO;
 import es.uvigo.esei.dai.server.entity.HTML;
+import es.uvigo.esei.dai.service.DaiService;
 
 public class HtmlController {
 	
@@ -52,17 +54,27 @@ public class HtmlController {
 		
 	}
 	
-	public HTTPResponse getPaginaIndex() throws SQLException{
+	public HTTPResponse getPaginaIndex(ArrayList<DaiService> listDaiServiceRemote) throws SQLException{
 		Map<String, String> parametros_respuesta_http = new HashMap<String, String>();
 		String paginaIndex="<html><head><title> WEB</title ></head><body><p>Listado de páginas</p>"
 				+"<a href=html?uuid=11111111-1111-1111-1111-111111111111>Añadir nueva pagina</a><br></br>";
-		ArrayList<String> lista=paginaDBDAO.getUUIDS();
-		
-		Iterator<String> it=lista.iterator();
-		while(it.hasNext()){
-			String identificador=it.next();
-			if(!identificador.equals("11111111-1111-1111-1111-111111111111")){//Si no es la pagina de post que mostramos arriba
-				paginaIndex=paginaIndex+"<a href=html?uuid="+identificador+"> Pagina con UUID:"+identificador+"</a><br></br>"; 
+	
+		//Mostramos las paginas disponibles en local
+		paginaIndex += "<h1>Local server</h1>";
+		for(String uuid:paginaDBDAO.getUUIDS()){
+			if(!uuid.equals("11111111-1111-1111-1111-111111111111")){//Si no es la pagina de post que mostramos arriba
+				paginaIndex=paginaIndex+"<a href=html?uuid="+uuid+"> Pagina con UUID:"+uuid+"</a><br></br>"; 
+			}
+		}
+		//Mostramos las páginas que se encuentran en los otros servidores
+		for(DaiService daiService: listDaiServiceRemote){
+			paginaIndex += "<h1>"+daiService.getName()+"</h1>";
+			
+			ArrayList <String> listUuid = daiService.getHtmlUUID();
+			for(String uuid:listUuid){
+				if(!uuid.equals("11111111-1111-1111-1111-111111111111")){//Si no es la pagina de post que mostramos arriba
+					paginaIndex=paginaIndex+"<a href=http://localhost:"+daiService.getPort()+"/html?uuid="+uuid+"> Pagina con UUID:"+uuid+"</a><br></br>"; 
+				}
 			}
 		}
 		paginaIndex=paginaIndex+"</body></html>";

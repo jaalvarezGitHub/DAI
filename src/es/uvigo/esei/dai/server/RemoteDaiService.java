@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -44,8 +45,8 @@ public class RemoteDaiService {
 	}
 	
 	
-	public String buscarPagina(String metodo, String uuid) throws PaginaNotFoundException, SQLException, 
-		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException{
+	public String buscarPagina(String metodo, String uuid) throws  PaginaNotFoundException, SQLException,
+		 IllegalArgumentException, NoSuchMethodException, SecurityException, ClassNotFoundException, IllegalAccessException{
 		
 		Class c=Class.forName("es.uvigo.esei.dai.service.DaiService");
 		Class[] args_class = { String.class };
@@ -53,11 +54,21 @@ public class RemoteDaiService {
 		Method m = c.getMethod(metodo, args_class);
 		Object resultado = null;
 		for(DaiService service: listaServicios){
-			resultado = m.invoke(service, uuid);
+			try{
+				resultado = m.invoke(service, uuid);
+			}catch(InvocationTargetException ite){
+				if(ite.getCause() instanceof PaginaNotFoundException)
+					throw (PaginaNotFoundException) ite.getCause();
+				else
+					throw (SQLException) ite.getCause();
+			}
 			if(resultado != null)
 				return (String) resultado;
 		}
 		return null;
 	}
-	
+	public ArrayList<DaiService> getServerIndex() {
+		return this.listaServicios;
+	}
+		
 }

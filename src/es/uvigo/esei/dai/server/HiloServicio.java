@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,15 +62,15 @@ public class HiloServicio implements Runnable {
 								String uuid = hreq.getParametros().get("uuid");
 								if (uuid != null) 
 									try{
-										
 										hres = htmlcontroler.getPagina(uuid);
 									}catch(PaginaNotFoundException e ){
-										
 										RemoteDaiService remoteDaiService=new RemoteDaiService(); 
 										hres = new HTTPResponse("200 OK", "HTTP/1.1",remoteDaiService.buscarPagina("getHtmlContent", uuid), parametros_respuesta_http);
 									}
-								else
-									hres=htmlcontroler.getPaginaIndex(); 
+								else{
+									RemoteDaiService remoteDaiService=new RemoteDaiService(); 
+									hres=htmlcontroler.getPaginaIndex(remoteDaiService.getServerIndex()); 
+								}
 								hres.print(bw);
 							break;
 							case "POST":
@@ -91,12 +92,29 @@ public class HiloServicio implements Runnable {
 								String uuid = hreq.getParametros().get("uuid");
 								String uuidXslt =hreq.getParametros().get("xslt");
 								if(uuidXslt !=null){
-									XSLT xslt_xml = new XSLTDBDAO(connection).get(uuidXslt);
-									XSD xsd_xml = new XSDDBDAO(connection).get(xslt_xml.getXSD());
+									XSLT xslt_xml; XSD xsd_xml;
+									try{
+										xslt_xml = new XSLTDBDAO(connection).get(uuidXslt);
+									}catch(PaginaNotFoundException e){
+										RemoteDaiService remoteDaiService=new RemoteDaiService(); 
+										xslt_xml = new XSLT(uuid, remoteDaiService.buscarPagina("getXsltContent", uuidXslt), remoteDaiService.buscarPagina("getXsltXsd", uuidXslt));
+									}
 									
+									try{
+										xsd_xml = new XSDDBDAO(connection).get(xslt_xml.getXSD());
+									}catch(PaginaNotFoundException e){
+										RemoteDaiService remoteDaiService=new RemoteDaiService(); 
+										xsd_xml = new XSD(xslt_xml.getXSD(), remoteDaiService.buscarPagina("getXsdContent", xslt_xml.getXSD()));
+									}
 									hres = xmlcontroler.getPagina(uuid,xsd_xml.getContent(), xslt_xml.getContent());	
 								}else if (uuid != null){
-									hres = xmlcontroler.getPagina(uuid);
+									try{
+										hres = xmlcontroler.getPagina(uuid);
+									}catch(PaginaNotFoundException e){
+										RemoteDaiService remoteDaiService=new RemoteDaiService(); 
+										hres = new HTTPResponse("200 OK", "HTTP/1.1",remoteDaiService.buscarPagina("getXmlContent", uuid), parametros_respuesta_http);
+									}
+									
 								}else{
 									hres=xmlcontroler.getPaginaIndex(); 
 								}

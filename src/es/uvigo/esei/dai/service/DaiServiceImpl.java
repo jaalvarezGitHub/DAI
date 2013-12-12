@@ -19,9 +19,21 @@ import es.uvigo.esei.dai.server.dbdao.XSLTDBDAO;
 public class DaiServiceImpl implements DaiService{
 	
 	public Connection connection=null;
+	public String name=null;
+	public String port=null;
 	
-	public DaiServiceImpl(Connection connection){
+	public DaiServiceImpl(Connection connection, String name, String port){
 		this.connection=connection;
+		this.name=name;
+		this.port=port;
+	}
+	@Override
+	public String getName(){
+		return this.name;
+	}
+	@Override
+	public String getPort(){
+		return this.port;
 	}
 	@Override
 	public ArrayList<String> getHtmlUUID() throws SQLException {
@@ -48,42 +60,36 @@ public class DaiServiceImpl implements DaiService{
 	}
 	
 	@Override
-	public String getHtmlContent(String uuid) throws SQLException  {
+	public String getHtmlContent(String uuid) throws SQLException, PaginaNotFoundException  {
 		HTMLDBDAO htmlDao = new HTMLDBDAO(this.connection);
-		try {
-			return htmlDao.get(uuid).getContent();
-		} catch (PaginaNotFoundException e) {
-			 return null;
-		}
+		return htmlDao.get(uuid).getContent();
+		
 	}
 	@Override
-	public String getXmlContent(String uuid) throws  SQLException {
+	public String getXmlContent(String uuid) throws  SQLException, PaginaNotFoundException {
 		XMLDBDAO xmlDao = new XMLDBDAO(this.connection);
-		try {
-			return xmlDao.get(uuid).getContent();
-		} catch (PaginaNotFoundException e) {
-			return null;
-		}
+		return xmlDao.get(uuid).getContent();
+		
 	}
 
 	@Override
-	public String getXsdContent(String uuid) throws  SQLException {
+	public String getXsdContent(String uuid) throws  SQLException, PaginaNotFoundException {
 		XSDDBDAO xsdDao = new XSDDBDAO(this.connection);
-		try {
-			return xsdDao.get(uuid).getContent();
-		} catch (PaginaNotFoundException e) {
-			return null;
-		}
+		return xsdDao.get(uuid).getContent();
+	
 	}
 
 	@Override
-	public String getXsltContent(String uuid) throws SQLException {
+	public String getXsltContent(String uuid) throws SQLException, PaginaNotFoundException {
 		XSLTDBDAO xsltDao = new XSLTDBDAO(this.connection);
-		try {
-			return xsltDao.get(uuid).getContent();
-		} catch (PaginaNotFoundException e) {
-			return null;
-		}
+		return xsltDao.get(uuid).getContent();
+	
+	}
+	@Override
+	public String getXsltXsd(String uuid) throws SQLException, PaginaNotFoundException {
+		XSLTDBDAO xsltDao = new XSLTDBDAO(this.connection);
+		return xsltDao.get(uuid).getXSD();
+	
 	}
 
 }

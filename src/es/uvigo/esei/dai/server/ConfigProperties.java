@@ -59,6 +59,5 @@ public class ConfigProperties {
 	}
 	public  NodeList getServer(){
 		 return  document.getElementsByTagName("server");
-
 	}
 }
